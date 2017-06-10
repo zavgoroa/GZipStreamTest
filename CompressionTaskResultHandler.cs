@@ -1,28 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace GZipTest
 {
-    class ArchiveTaskResultHandler: IDisposable
+    class CompressionTaskResultHandler: IDisposable
     {
         private FileStream m_outputStream;
-        public long summ = 0;
+        public long m_numberOutputBytes = 0;
 
-        public ArchiveTaskResultHandler(string outputFileName)
+        public long NumberOutputBytes
+        {
+            get { return m_numberOutputBytes; }
+            private set { m_numberOutputBytes = value; }
+        }
+
+        public CompressionTaskResultHandler(string outputFileName)
         {
             m_outputStream = new FileStream(outputFileName, FileMode.OpenOrCreate, FileAccess.Write);
         }
 
-        public virtual void processResultTask(ArchiveTask task)
+        public virtual void Handle(CompressionTask task)
         {
             if (task.Exception == null)
             {
-                summ += task.ResultData.Length;
+                m_numberOutputBytes += task.ResultData.Length;
                 //Console.WriteLine($"completed task: {task.Id}, block: {task.ResultData.Length}");
                 m_outputStream.Write(task.ResultData, 0, task.ResultData.Length);
                 m_outputStream.Flush();
-                task.Dispose();
             } else
             {
                 throw task.Exception;

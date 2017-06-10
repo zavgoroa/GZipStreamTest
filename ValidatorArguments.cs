@@ -9,7 +9,13 @@ namespace GZipTest
         private string m_outputFileName;
         private CompressionMode m_compressionMode;
         private readonly int m_countArgument = 3;
+        private bool m_isChecked = false;
 
+        public bool IsChecked
+        {
+            get { return m_isChecked; }
+            private set { m_isChecked = value; }
+        }
         public string InputFileName
         {
             get { return m_inputFileName; }
@@ -28,7 +34,7 @@ namespace GZipTest
             private set { m_compressionMode = value; }
         }
 
-        protected virtual bool checkFile(string inputFileName, string outputFileName)
+        private bool checkFile(string inputFileName, string outputFileName)
         {
             FileInfo inputFileInfo = new FileInfo(inputFileName);
             if (!inputFileInfo.Exists || inputFileInfo.Length == 0)
@@ -44,7 +50,7 @@ namespace GZipTest
             return true;
         }
 
-        protected virtual bool checkArguments(string [] args)
+        private bool checkArguments(string [] args)
         {
             if (args.Length != m_countArgument)
             {
@@ -70,9 +76,9 @@ namespace GZipTest
             return true;
         }
 
-        public virtual bool check(string[] args)
+        public bool Check(string[] args)
         {
-            return checkArguments(args) && checkFile(InputFileName, OutputFileName);
+            return (IsChecked = checkArguments(args) && checkFile(InputFileName, OutputFileName));
         }
     }
 

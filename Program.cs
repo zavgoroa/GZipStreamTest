@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
-using System.Text;
 
 namespace GZipTest
 {
@@ -9,18 +7,31 @@ namespace GZipTest
     {
         static void Main(string[] args)
         {
+            ValidatorArguments valArg = null;
             try
             {
-                ValidatorArguments valArg = new ValidatorArguments();
-                if (valArg.check(args))
+                valArg = new ValidatorArguments();
+                if (valArg.Check(args))
                 {
-                    new ArchiveFile().archive(valArg.CompressionMode, valArg.InputFileName, valArg.OutputFileName);
+                    Console.WriteLine("Executing...");
+                    new CompressionFile().Execute(valArg.CompressionMode, valArg.InputFileName, valArg.OutputFileName);
                     Console.WriteLine($"Result: 1");
                 }
             }
             catch (Exception exception)
             {
-                Console.WriteLine($"Result: 0, \n {exception.StackTrace} \n {exception.Source} \n { exception.Message}");
+                try
+                {
+                    if (valArg != null && valArg.IsChecked)
+                    {
+                        File.Delete(valArg.OutputFileName);
+                    }
+                }
+                catch { }
+                finally
+                {
+                    Console.WriteLine($"Result: 0, \n stackTrace:{exception.StackTrace} \n Message:{ exception.Message}");
+                }
             }
         }
     }

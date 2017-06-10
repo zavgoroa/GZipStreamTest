@@ -7,8 +7,8 @@ namespace GZipTest
     static class CustomFixedThreadPool
     {
         private static List<Thread> m_thread = new List<Thread>();
-        private static Queue<ArchiveTask> m_tasks = new Queue<ArchiveTask>();
-        private static SortedDictionary<int, ArchiveTask> m_completedTask = new SortedDictionary<int, ArchiveTask>();
+        private static Queue<CompressionTask> m_tasks = new Queue<CompressionTask>();
+        private static SortedDictionary<int, CompressionTask> m_completedTask = new SortedDictionary<int, CompressionTask>();
 
         static CustomFixedThreadPool()
         {
@@ -21,9 +21,9 @@ namespace GZipTest
             }
         }
 
-        public static ArchiveTask getCompletedTask(int index)
+        public static CompressionTask GetCompletedTask(int index)
         {
-            ArchiveTask task = null;
+            CompressionTask task = null;
             lock (m_completedTask)
             {
                 if (m_completedTask.ContainsKey(index))
@@ -49,7 +49,7 @@ namespace GZipTest
         {
             while(true)
             {
-                ArchiveTask task = null;
+                CompressionTask task = null;
                 lock(m_tasks)
                 {
                     while (m_tasks.Count == 0)
@@ -58,12 +58,12 @@ namespace GZipTest
                     }
                     task = m_tasks.Dequeue();
                 }
-                task.execute();
+                task.Execute();
                 addCompletedTask(task);
             }
         }
 
-        private static void addCompletedTask(ArchiveTask task)
+        private static void addCompletedTask(CompressionTask task)
         {
             lock (m_completedTask)
             {
@@ -71,7 +71,7 @@ namespace GZipTest
             }
         }
 
-        public static void executeTask(ArchiveTask task)
+        public static void ExecuteTask(CompressionTask task)
         {
             lock(m_tasks)
             {

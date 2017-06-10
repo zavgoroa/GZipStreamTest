@@ -5,7 +5,7 @@ using System.IO;
 namespace GZipTest
 {
 
-    class ArchiveTask: IDisposable
+    class CompressionTask: IDisposable
     {
         private CompressionMode m_mode;
         private readonly string m_sourceFileName;
@@ -15,7 +15,7 @@ namespace GZipTest
         private int m_id;
         private Exception m_exception;
 
-        public ArchiveTask(int id, CompressionMode mode, string sourceFileName, int countBytes, long offsetBytes)
+        public CompressionTask(int id, CompressionMode mode, string sourceFileName, int countBytes, long offsetBytes)
         {
             m_id = id;
             m_mode = mode;
@@ -48,7 +48,7 @@ namespace GZipTest
             private set { m_exception = value; }
         }
 
-        public void execute()
+        public void Execute()
         {
             try
             {
